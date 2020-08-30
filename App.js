@@ -9,16 +9,17 @@ GAME RULES:
 
 */
 
-var scores,activePlayer,currentScore,gamePlaying;
+var scores,activePlayer,currentScore,gamePlaying,lastDice, dice;
 
 init();
 
 document.querySelector('.btn-roll').addEventListener("click", function() {
+    
 
     if(gamePlaying){
 
             //1. random number
-            var dice = Math.floor(Math.random() * 6 ) + 1;
+            dice = Math.floor(Math.random() * 6 ) + 1;
 
             //2.  Display the result
             var diceDom =  document.querySelector('.dice');
@@ -26,22 +27,30 @@ document.querySelector('.btn-roll').addEventListener("click", function() {
                 diceDom.src = 'dice-' + dice + '.png';
         
             // 3. update the round score if the rolled number was not 1 ;
+            if(dice === 6 && lastDice === 6){
+                //player loose score
+                scores[activePlayer] = 0;
+                document.querySelector('#score-' + activePlayer).textContent = '0' ;
+                nextPlayer();
+            }
         
-                if( dice !== 1)
-                {
-                    currentScore +=  dice ;
-                    document.querySelector('#current-' + activePlayer).textContent = currentScore ;
-                }
-                else {
-                    // Next Player
-                    nextPlayer();
-                  
-                  
-                }
+            else if( dice !== 1)
+            {
+                currentScore +=  dice ;
+                document.querySelector('#current-' + activePlayer).textContent = currentScore ;
+            }
+            else {
+                // Next Player
+                nextPlayer();
+                
+                
+            }             
+               
+            lastDice = dice;
     }
        
 
-} );
+});
     document.querySelector('.btn-hold').addEventListener('click',function() {
         
         if(gamePlaying) {
@@ -52,7 +61,7 @@ document.querySelector('.btn-roll').addEventListener("click", function() {
         document.querySelector('#score-'+ activePlayer).textContent =  scores[activePlayer];
 
         //3 Check if player win  
-        if(scores[activePlayer] >= 20) {
+        if(scores[activePlayer] >= 100) {
             document.querySelector('#name-'+ activePlayer).textContent = "WINNER!" ;            
             document.querySelector('.dice').style.display = 'none';
             document.querySelector('.player-'+ activePlayer + '-panel').classList.add('winner');
@@ -72,7 +81,7 @@ document.querySelector('.btn-roll').addEventListener("click", function() {
     function nextPlayer()
     {
         activePlayer == 0 ? activePlayer = 1 : activePlayer  = 0;
-        currentScore = 0;
+        currentScore = 0;        
         document.getElementById('current-0').textContent = '0' ;
         document.getElementById('current-1').textContent = '0' ;
 
@@ -83,7 +92,6 @@ document.querySelector('.btn-roll').addEventListener("click", function() {
         document.querySelector('.player-1-panel').classList.toggle = 'active';
 
         document.querySelector('.dice').style.display = 'none';
-
         
     }
 
